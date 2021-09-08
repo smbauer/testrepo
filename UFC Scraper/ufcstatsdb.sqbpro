@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/steve/Desktop/UFC Scraper/ufcstatsdb.sqlite" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="125"/><column_width id="3" width="12870"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,5:mainEvent"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Event" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="52"/><column index="2" value="300"/><column index="3" value="156"/><column index="4" value="300"/><column index="5" value="109"/><column index="6" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Fight" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="12" mode="1"/></sort><column_widths><column index="1" value="52"/><column index="2" value="85"/><column index="3" value="100"/><column index="4" value="138"/><column index="5" value="198"/><column index="6" value="96"/><column index="7" value="191"/><column index="8" value="61"/><column index="9" value="52"/><column index="10" value="117"/><column index="11" value="300"/><column index="12" value="454"/><column index="13" value="300"/></column_widths><filter_values><column index="12" value="spinn"/></filter_values><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="FightStats" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="17" mode="1"/></sort><column_widths><column index="1" value="52"/><column index="2" value="78"/><column index="3" value="95"/><column index="4" value="93"/><column index="5" value="59"/><column index="6" value="67"/><column index="7" value="105"/><column index="8" value="133"/><column index="9" value="99"/><column index="10" value="102"/><column index="11" value="171"/><column index="12" value="137"/><column index="13" value="140"/><column index="14" value="138"/><column index="15" value="104"/><column index="16" value="176"/><column index="17" value="142"/><column index="18" value="133"/><column index="19" value="99"/><column index="20" value="102"/><column index="21" value="171"/><column index="22" value="137"/><column index="23" value="140"/><column index="24" value="112"/><column index="25" value="150"/><column index="26" value="73"/><column index="27" value="111"/><column index="28" value="74"/><column index="29" value="112"/><column index="30" value="157"/><column index="31" value="123"/><column index="32" value="195"/><column index="33" value="161"/><column index="34" value="158"/><column index="35" value="124"/><column index="36" value="196"/><column index="37" value="162"/><column index="38" value="141"/><column index="39" value="107"/><column index="40" value="179"/><column index="41" value="145"/><column index="42" value="187"/><column index="43" value="153"/><column index="44" value="225"/><column index="45" value="191"/><column index="46" value="165"/><column index="47" value="131"/><column index="48" value="203"/><column index="49" value="169"/><column index="50" value="177"/><column index="51" value="143"/><column index="52" value="215"/><column index="53" value="181"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Fighter" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="52"/><column index="2" value="198"/><column index="3" value="224"/><column index="4" value="65"/><column index="5" value="57"/><column index="6" value="69"/><column index="7" value="80"/><column index="8" value="106"/><column index="9" value="65"/><column index="10" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Weightclass" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="52"/><column index="2" value="187"/><column index="3" value="69"/><column index="4" value="69"/><column index="5" value="52"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">SELECT Weightclass.name AS division, COUNT(fight.id) AS numFights
+FROM Fight JOIN Weightclass ON fight.weightclass_id = Weightclass.id
+GROUP BY division
+ORDER BY numFights DESC;</sql><sql name="SQL 6">SELECT Fighter.name AS fName, COUNT(FightStats.id) AS numFights, SUM(tTime.totalTime) AS totalMins, ROUND(SUM(tTime.totalTime)/COUNT(FightStats.id),2) AS avgFightTime,
+	ROUND(SUM(FightStats.ss_landed_for)/SUM(tTime.totalTime),2) AS SLpM, ROUND(CAST(SUM(FightStats.ss_landed_for) AS float)/SUM(FightStats.ss_att_for),2) AS &quot;Str%&quot;,
+	ROUND(SUM(FightStats.ss_landed_against)/SUM(tTime.totalTime),2) AS SApM, ROUND(1 - CAST(SUM(FightStats.ss_landed_against) AS float)/SUM(FightStats.ss_att_against),2) AS &quot;StrDef%&quot;,
+	ROUND(SUM(FightStats.td_landed_for)/SUM(tTime.totalTime)*15,2) AS &quot;TD/15min&quot;, ROUND(CAST(SUM(FightStats.td_landed_for) AS float)/SUM(FightStats.td_att_for),2) AS &quot;TD%&quot;,
+	ROUND(1 - CAST(SUM(FightStats.td_landed_against) AS float)/SUM(FightStats.td_att_against),2) AS &quot;TDDef%&quot;, SUM(FightStats.kd_for) AS &quot;KD for&quot;, SUM(FightStats.kd_against) AS &quot;KD against&quot;, 
+	SUM(FightStats.sub_att_for) AS subAttFor, SUM(FightStats.sub_att_against) AS subAttAgainst, SUM(FightStats.rev_for) AS revFor, SUM(FightStats.rev_against) AS revAgainst,
+	SUM(ctrlTime.ctrlMinsFor) AS ctrlMinsFor, SUM(ctrlTime.ctrlMinsAgainst) AS ctrlMinsAgainst, ROUND(SUM(ctrlTime.ctrlMinsFor)/SUM(tTime.totalTime),2) AS &quot;ctrl%For&quot;,
+	ROUND(SUM(ctrlTime.ctrlMinsAgainst)/SUM(tTime.totalTime),2) AS &quot;ctrl%Against&quot;, 1-ROUND((SUM(ctrlTime.ctrlMinsFor) + SUM(ctrlTime.ctrlMinsAgainst))/SUM(tTime.totalTime),2) AS &quot;distance%&quot;,
+	quickFinish.numQuickFinishes AS quickFinishes
+FROM Fight
+JOIN FightStats
+JOIN Fighter
+JOIN(
+	 SELECT id, round, time,
+		CASE WHEN (strftime('%M', '00:0' || time) = 5) THEN (round * 5.0)
+		ELSE ((round - 1)*5.0 + strftime('%M', '00:0' || time) + round(strftime('%S', '00:0' || time)/60.0,2)) END AS totalTime
+	 FROM Fight) AS tTime
+JOIN(
+	 SELECT id, ROUND(strftime('%M', '00:0' || ctrl_for) + (strftime('%S', '00:0' || ctrl_for))/60.0,2) AS ctrlMinsFor,
+		ROUND(strftime('%M', '00:0' || ctrl_against) + (strftime('%S', '00:0' || ctrl_against))/60.0,2) AS ctrlMinsAgainst
+	 FROM FightStats) AS ctrlTime
+JOIN(
+	SELECT Fighter.id AS fid, SUM(quickFinish.quickFinish) AS numQuickFinishes
+	FROM (
+		SELECT Fight.id AS fight_id, Fighter.id AS fighter_id, CASE WHEN (totalTime.totalMins &lt;= 1)
+			THEN 1
+			ELSE 0 END AS quickFinish
+		FROM (
+			SELECT id, round, time, CASE WHEN (strftime('%M', '00:0' || time) = 5)
+				THEN (round * 5.0)
+				ELSE ((round - 1)*5.0 + strftime('%M', '00:0' || time) + round(strftime('%S', '00:0' || time)/60.0,2)) END AS totalMins
+			FROM Fight) AS totalTime
+		JOIN Fight JOIN Fighter ON (totalTime.id = Fight.id) AND (Fight.winner = Fighter.name)
+		WHERE winner != 'No Contest') AS quickFinish
+	JOIN Fighter ON (Fighter.id = quickFinish.fighter_id)
+	GROUP BY fid) AS quickFinish
+ON (Fight.id = FightStats.fight_id) AND (Fighter.id = FightStats.fighter_id) AND (tTime.id = fight.id) AND (ctrlTime.id = FightStats.id) AND (quickFinish.fid = Fighter.id)
+GROUP BY fName
+ORDER BY &quot;KD for&quot; DESC;</sql><sql name="SQL 10">SELECT Fighter.id AS fid, SUM(quickFinish.quickFinish) AS numQuickFinishes
+FROM (
+	SELECT Fight.id AS fight_id, Fighter.id AS fighter_id, CASE WHEN (totalTime.totalMins &lt;= 1)
+		THEN 1
+		ELSE 0 END AS quickFinish
+	FROM (
+		SELECT id, round, time, CASE WHEN (strftime('%M', '00:0' || time) = 5)
+			THEN (round * 5.0)
+			ELSE ((round - 1)*5.0 + strftime('%M', '00:0' || time) + round(strftime('%S', '00:0' || time)/60.0,2)) END AS totalMins
+		FROM Fight) AS totalTime
+	JOIN Fight JOIN Fighter ON (totalTime.id = Fight.id) AND (Fight.winner = Fighter.name)
+	WHERE winner != 'No Contest') AS quickFinish
+JOIN Fighter ON (Fighter.id = quickFinish.fighter_id)
+GROUP BY fid
+ORDER BY numQuickFinishes DESC;</sql><sql name="SQL 11">SELECT Fighter.name as fName, fWins.wins AS f_wins, fLosses.losses AS f_losses
+FROM Fighter
+JOIN(
+	SELECT Fighter.id AS fid, COUNT(fighterWins.result) AS wins
+	FROM Fighter
+	LEFT JOIN(
+		SELECT fighter_id, result
+		FROM FightStats
+		WHERE result = 'W') AS fighterWins
+	ON (Fighter.id = fighterWins.fighter_id)
+	GROUP BY fid) AS fWins
+JOIN(
+	SELECT Fighter.id AS fid, COUNT(fighterLosses.result) AS losses
+	FROM Fighter
+	LEFT JOIN(
+		SELECT fighter_id, result
+		FROM FightStats
+		WHERE result = 'L') AS fighterLosses
+	ON (Fighter.id = fighterLosses.fighter_id)
+	GROUP BY fid) AS fLosses
+ON (Fighter.id = fWins.fid) AND (Fighter.id = fLosses.fid) AND (fWins.fid = fLosses.fid)
+GROUP BY fName
+ORDER BY f_wins DESC;
+</sql><sql name="SQL 12">SELECT fighterWins.fid AS fid, fighterWins.wins AS wins, COUNT(fighterLosses.result) AS losses
+FROM(
+	SELECT Fighter.id AS fid, COUNT(fighterWins.result) AS wins
+	FROM Fighter
+	LEFT JOIN(
+		SELECT fighter_id, result
+		FROM FightStats
+		WHERE result = 'W') AS fighterWins
+	ON (Fighter.id = fighterWins.fighter_id)
+	GROUP BY fid) AS fighterWins
+LEFT JOIN(
+		SELECT fighter_id, result
+		FROM FightStats
+		WHERE result = 'L') AS fighterLosses
+ON (fighterWins.fid = fighterLosses.fighter_id)
+GROUP BY fid</sql><sql name="SQL 13">SELECT fighter.name,
+	Weightclass.name AS Division,
+	COUNT(fightstats.Fight_id) AS numFights,
+	SUM(ss_landed_for)/SUM(total_time) AS SLpM,
+	SUM(ss_landed_against)/SUM(total_time) AS SApM,
+	CAST(SUM(ss_landed_for) AS float)/SUM(ss_att_for) AS SS_for_pct,
+	1-(CAST(SUM(ss_landed_against) AS float)/SUM(ss_att_against)) AS SS_def_pct,
+	SUM(str_landed_for)/SUM(total_time) AS StrLpM,
+	SUM(str_landed_against)/SUM(total_time) AS StrApM,
+	CAST(SUM(str_landed_for) AS float)/SUM(str_att_for) AS Str_for_pct,
+	1-(CAST(SUM(str_landed_against) AS float)/SUM(str_att_against)) AS Str_def_pct,
+	SUM(kd_for)/SUM(total_time) AS KDpM_for,
+	SUM(kd_against)/SUM(total_time) AS KDpM_against,
+	SUM(td_landed_for)/SUM(total_time) AS TDLpM_for,
+	SUM(td_landed_against)/SUM(total_time) AS TDLpM_against,
+	SUM(td_att_for)/SUM(total_time) AS TDApM_for,
+	SUM(td_att_against)/SUM(total_time) AS TDApM_against,
+	CAST(SUM(td_landed_for) AS float)/SUM(td_att_for) AS TD_for_pct,
+	1-(CAST(SUM(td_landed_against) AS float)/SUM(td_att_against)) AS TD_def_pct,
+	SUM(rev_for)/SUM(total_time) AS RpM_for,
+	SUM(rev_against)/SUM(total_time) AS RpM_against,
+	SUM(ctrl_for)/SUM(total_time) AS Ctrl_pct_for,
+	SUM(ctrl_against)/SUM(total_time) AS Ctrl_pct_against
+FROM FightStats
+JOIN Fight ON FightStats.fight_id = Fight.id
+JOIN Fighter ON Fighter.id = FightStats.fighter_id
+JOIN Weightclass ON Weightclass.id = Fight.weightclass_id
+GROUP BY fighter.name, fight.weightclass_id
+HAVING SUM(total_time) &gt; 10
+ORDER BY SLpM DESC;</sql><sql name="SQL 13">SELECT DISTINCT Fight.id AS fid, Fighter.name AS fname, Event.name AS eName
+FROM Event JOIN Fight JOIN FightStats JOIN Fighter
+ON (Event.id = Fight.event_id) AND (Fight.id = FightStats.fight_id) AND (Fighter.id = FightStats.fighter_id)
+WHERE Event.name LIKE 'DWCS%'
+ORDER BY fid</sql><sql name="SQL 14">/*Calculates median value for SLpM (replace as necessary) column */
+/*Modified for specific weightclasses */
+
+SELECT AVG(SLpM) AS medSLpM
+FROM (SELECT SLpM
+      FROM (
+			SELECT ss_pct_for AS SLpM
+			FROM Fight
+			JOIN Weightclass
+			JOIN FightStats
+				ON (Fight.weightclass_id = Weightclass.id) AND (Fight.id = FightStats.fight_id)
+			WHERE Weightclass.male = 0
+			)
+      ORDER BY SLpM
+      LIMIT 2 - (
+				 SELECT COUNT(*)
+				 FROM (
+						SELECT ss_pct_for
+						FROM Fight
+						JOIN Weightclass
+						JOIN FightStats
+							ON (Fight.weightclass_id = Weightclass.id) AND (Fight.id = FightStats.fight_id)
+						WHERE Weightclass.male = 0
+					  )
+				 ) %2 /*decides which value to use based on odd/even number of rows */
+	  OFFSET (
+			  SELECT (COUNT(*)-1)/2
+			  FROM (
+					SELECT ss_pct_for
+					FROM Fight
+					JOIN Weightclass
+					JOIN FightStats
+						ON (Fight.weightclass_id = Weightclass.id) AND (Fight.id = FightStats.fight_id)
+					WHERE Weightclass.male = 0
+					)
+			 )
+
+)</sql><sql name="SQL 15">/*Calculates median value for SLpM (replace as necessary) column */
+/*Currently set up to calculate value for every fight, need to modify for specific weightclasses */
+
+SELECT AVG(SLpM) AS medSLpM
+FROM (SELECT SLpM
+      FROM (
+			SELECT td_pct_for AS SLpM
+			FROM Fight
+			JOIN Weightclass
+			JOIN FightStats
+				ON (Fight.weightclass_id = Weightclass.id) AND (Fight.id = FightStats.fight_id)
+			GROUP BY FightStats.fighter_id
+			)
+      ORDER BY SLpM
+      LIMIT 2 - (
+				 SELECT COUNT(DISTINCT fighter_id)
+				 FROM FightStats
+				 ) %2 /*decides which value to use based on odd/even number of rows */
+	  OFFSET (
+			  SELECT (COUNT(DISTINCT fighter_id)-1)/2
+			  FROM FightStats
+			 )
+
+)</sql><current_tab id="5"/></tab_sql></sqlb_project>

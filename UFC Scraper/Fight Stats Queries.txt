@@ -1,0 +1,68 @@
+/*Calculates median value for SLpM (replace as necessary) column */
+/*Currently set up to calculate value for every fight, need to modify for specific weightclasses */
+
+SELECT AVG(SLpM) AS medSLpM
+FROM (SELECT SLpM
+      FROM (
+			SELECT ROUND(ss_landed_for/total_time,2) AS SLpM
+			FROM Fight
+			JOIN Weightclass
+			JOIN FightStats
+				ON (Fight.weightclass_id = Weightclass.id) AND (Fight.id = FightStats.fight_id)
+			)
+      ORDER BY SLpM
+      LIMIT 2 - (
+				 SELECT COUNT(*)
+				 FROM FightStats
+				 ) %2 /*decides which value to use based on odd/even number of rows */
+	  OFFSET (
+			  SELECT (COUNT(*)-1)/2
+			  FROM FightStats
+			 )
+
+)
+
+==============================================================
+
+/*Calculates median value for SLpM (replace as necessary) column */
+/*Modified for specific weightclasses */
+
+SELECT AVG(SLpM) AS medSLpM
+FROM (SELECT SLpM
+      FROM (
+			SELECT ROUND(ss_landed_for/total_time,2) AS SLpM
+			FROM Fight
+			JOIN Weightclass
+			JOIN FightStats
+				ON (Fight.weightclass_id = Weightclass.id) AND (Fight.id = FightStats.fight_id)
+			WHERE Weightclass.abbrev = 'WSW'
+			)
+      ORDER BY SLpM
+      LIMIT 2 - (
+				 SELECT COUNT(*)
+				 FROM (
+						SELECT ss_landed_for/total_time
+						FROM Fight
+						JOIN Weightclass
+						JOIN FightStats
+							ON (Fight.weightclass_id = Weightclass.id) AND (Fight.id = FightStats.fight_id)
+						WHERE Weightclass.abbrev = 'WSW'
+					  )
+				 ) %2 /*decides which value to use based on odd/even number of rows */
+	  OFFSET (
+			  SELECT (COUNT(*)-1)/2
+			  FROM (
+					SELECT ss_landed_for/total_time
+					FROM Fight
+					JOIN Weightclass
+					JOIN FightStats
+						ON (Fight.weightclass_id = Weightclass.id) AND (Fight.id = FightStats.fight_id)
+					WHERE Weightclass.abbrev = 'WSW'
+					)
+			 )
+
+)
+
+
+=============================================
+
